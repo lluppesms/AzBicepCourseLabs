@@ -5,13 +5,17 @@ location="Australia East"
 ##Create resource group
 az group create --name $resourceGroupName --location $location
 
-###########################
+## Deploy Bicep with JSON parameter file
+az deployment group create --parameters simple-storage.parameters.json --template-file simple-storage.bicep --name storage.params.01 --resource-group $resourceGroupName
 
-##Deploy resource group and provision resources
-az deployment group create \
-    --resource-group $resourceGroupName \
-    --template-file "simple-storage-deploy.bicep" \
-    --parameters "simple-storage.parameters.json"  #--what-if
+## Deploy Bicep with Bicep parameter file
+az deployment group create --parameters simple-storage.bicepparam --template-file simple-storage.bicep --name storage.params.02 --resource-group $resourceGroupName
+
+## Override One Parameter on the command line
+az deployment group create --parameters simple-storage.parameters.json storageAccountName=xxxuniquestoragedemo003 --name storage.params.03 --template-file simple-storage.bicep --resource-group $resourceGroupName
+
+## What would this deploy do if I ran it...? (add the --what-if parameter...)
+az deployment group create --what-if --template-file simple-storage.bicep --parameters simple-storage.parameters.json --resource-group rg_demo
 
 ##Cleanup Resourcegroup
 az group delete --name $resourceGroupName --yes --no-wait

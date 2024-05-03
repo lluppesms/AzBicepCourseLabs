@@ -12,13 +12,15 @@ az group create --name $resourceGroupName --location $location
 #############################
 ##Publish Modules to ACR 
 
-##Deploy Azure Container registry for publishing images into
-az deployment group create --resource-group $resourceGroupName --template-file "containerregistry-parameters.bicep" 
+## Publish Modules to ACR 
+## Create Azure Container Registry for publishing images into
+$acrname="XXXdemobicepregistry"
+az deployment group create --template-file containerregistry-parameters.bicep --parameters registryName=$acrname --name bicep.acr.remote.01 --resource-group $resourceGroupName
 
-#publish Storage Account
-az bicep publish --file 'storage-module.bicep' --target br:$acrname.azurecr.io/bicep/modules/storage/storageaccounts:$moduleReleaseVersion
-
-#############################
+## Publish Storage Account Module
+$acrname="XXXdemobicepregistry"
+$moduleReleaseVersion="v1.0.0"
+az bicep publish --file storage-module.bicep --target br:$acrname.azurecr.io/bicep/modules/storage/storageaccounts:$moduleReleaseVersion
 
 ##Cleanup Resourcegroup
 #az group delete --name $resourceGroupName --yes --no-wait

@@ -5,13 +5,20 @@ location="Australia East"
 ##Create resource group
 az group create --name $resourceGroupName --location $location
 
-###########################
+## Deploy Bicep file with parameters
+az deployment group create --template-file loop-storage.bicep --parameters loop-storage.bicepparam --name loop.storage.01 --resource-group $resourceGroupName
 
-##Deploy resource group and provision resources
-az deployment group create \
-    --resource-group $resourceGroupName \
-    --template-file "loop-storage-deploy.bicep" \
-    --parameters "loop.storage.parameters.json"  ##--what-if
+## Override the loop count parameter using the JSON parameter file
+az deployment group create --parameters loop-storage.parameters.json storageLoopCount=3 --template-file loop-storage.bicep --name loop.storage.02 --resource-group $resourceGroupName
+# NOTE: THIS FAILS WHEN USING BICEPPARM: (not sure why...?!)
+#   az deployment group create --parameters loop-storage.bicepparam storageLoopCount=3 --template-file loop-storage.bicep --name loop.storage.02 --resource-group $resourceGroupName
+
+## What would the deploy do if we asked for 10 accounts...?
+az deployment group create --what-if --template-file loop-storage.bicep --parameters loop-storage.parameters.json storageLoopCount=10 --resource-group $resourceGroupName
+
+## Override the deployStorageAccount parameter using the JSON parameter file
+az deployment group create --parameters loop-storage.parameters.json storageLoopCount=10 deployStorageAccount=false --name loop.storage.03 --template-file loop-storage.bicep --resource-group $resourceGroupName
+
 
 ##Cleanup Resourcegroup
 az group delete --name $resourceGroupName --yes --no-wait

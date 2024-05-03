@@ -5,13 +5,14 @@ location="Australia East"
 ##Create resource group
 az group create --name $resourceGroupName --location $location
 
+## Deploy storage using Local module
+az deployment group create --template-file storageaccount-local-module.bicep --name bicep.modules.01 --resource-group $resourceGroupName
 
-###########################
+## Deploy storage using Local module and parameter file
+az deployment group create --template-file storageaccount-local-module.bicep --parameters storageaccount-local-module.bicepparam --name bicep.modules.02 --resource-group $resourceGroupName
 
-#Deploy resource group and provision resources - Local module
-az deployment group create \
-    --resource-group $resourceGroupName \
-    --template-file "storageaccount-local-parameters.bicep" ##--what-if
+## Deploy storage using PUBLIC module and parameter file
+az deployment group create --template-file storageAccount-public-module.bicep --parameters storageAccount-public-module.bicepparam --name bicep.modules.03 --resource-group $resourceGroupName
 
 ##Cleanup Resourcegroup
 az group delete --name $resourceGroupName --yes --no-wait

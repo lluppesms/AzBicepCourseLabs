@@ -1,8 +1,8 @@
 {
     "moduleAliases": {
         "br": {
-            "demoazureregistry":{
-                "registry": "demoazuregistry.azurecr.io",
+            "mybicepregistry":{
+                "registry": "XXXdemobicepregistry.azurecr.io",
                 "modulePath": "bicep/modules" 
             }
         }        
